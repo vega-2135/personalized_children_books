@@ -14,6 +14,7 @@ export interface ChildCharacter {
 export interface StoryTemplate {
   id: string;
   title: string;
+  description: string;
   ageRange: {
     min: number;
     max: number;
@@ -27,7 +28,7 @@ export interface StoryPage {
   text: string;
   sceneDescription: string;
   characterPosition: 'left' | 'center' | 'right';
-  characterMood: 'happy' | 'sad' | 'excited' | 'thoughtful';
+  characterMood: 'happy' | 'sad' | 'excited' | 'thoughtful' | 'sleepy';
   backgroundType: string;
 }
 
