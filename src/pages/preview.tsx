@@ -1,8 +1,9 @@
 import React from 'react';
-import { Page, Layout } from '@shopify/polaris';
+import { Text, BlockStack } from '@shopify/polaris';
 import { StoryPreview } from '../components/StoryPreview';
 import { STORY_THEMES } from '../components/StorySelector';
 import type { StoryTemplate } from '../types';
+import { AppLayout } from '../components/AppLayout';
 
 export default function PreviewPage() {
   // For testing, we'll use the potty training story
@@ -16,26 +17,20 @@ export default function PreviewPage() {
 
   if (!pottyStory) {
     return (
-      <Page>
-        <Layout>
-          <Layout.Section>
-            <p>Story not found</p>
-          </Layout.Section>
-        </Layout>
-      </Page>
+      <AppLayout>
+        <BlockStack gap="400" align="center">
+          <Text as="p" tone="critical">Story not found</Text>
+        </BlockStack>
+      </AppLayout>
     );
   }
 
   return (
-    <Page>
-      <Layout>
-        <Layout.Section>
-          <StoryPreview 
-            story={pottyStory}
-            characterDetails={characterDetails}
-          />
-        </Layout.Section>
-      </Layout>
-    </Page>
+    <AppLayout>
+      <StoryPreview 
+        story={pottyStory}
+        characterDetails={characterDetails}
+      />
+    </AppLayout>
   );
 }

@@ -17,6 +17,9 @@ export class IllustrationService {
   private apiEndpoint: string;
 
   constructor(apiKey: string) {
+    if (!apiKey) {
+      throw new Error('API key is required');
+    }
     this.apiKey = apiKey;
     this.apiEndpoint = 'https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image';
   }
@@ -36,6 +39,7 @@ export class IllustrationService {
   async generateIllustration(page: StoryPage): Promise<IllustrationResponse> {
     try {
       const prompt = await this.generatePrompt(page);
+      console.log('Generated prompt:', prompt);
       
       const response = await fetch(this.apiEndpoint, {
         method: 'POST',
@@ -63,15 +67,20 @@ export class IllustrationService {
       });
 
       if (!response.ok) {
-        throw new Error(`API request failed: ${response.statusText}`);
+        const errorText = await response.text();
+        console.error('API response error:', errorText);
+        throw new Error(`API request failed: ${response.statusText} (${response.status})`);
       }
 
       const data = await response.json();
+      console.log('API response:', data);
       
-      // The actual response structure will depend on the Stable Diffusion API
-      // This is a placeholder for the actual implementation
+      if (!data.artifacts || !data.artifacts[0] || !data.artifacts[0].base64) {
+        throw new Error('Invalid API response format');
+      }
+
       return {
-        imageUrl: data.artifacts[0].base64, // The API returns base64 encoded images
+        imageUrl: `data:image/png;base64,${data.artifacts[0].base64}`,
       };
     } catch (error) {
       console.error('Error generating illustration:', error);
@@ -86,8 +95,13 @@ export class IllustrationService {
     const results = new Map<number, IllustrationResponse>();
     
     for (const page of pages) {
+      console.log(`Generating illustration for page ${page.pageNumber}...`);
       const result = await this.generateIllustration(page);
       results.set(page.pageNumber, result);
+      
+      if (result.error) {
+        console.error(`Failed to generate illustration for page ${page.pageNumber}:`, result.error);
+      }
     }
     
     return results;
