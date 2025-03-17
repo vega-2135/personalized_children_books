@@ -8,7 +8,7 @@ interface StorySelectorProps {
   onSelect: (story: StoryTemplate) => void;
 }
 
-const STORY_THEMES: StoryTemplate[] = [
+export const STORY_THEMES: StoryTemplate[] = [
   {
     id: 'sharing',
     title: 'Learning to Share',
